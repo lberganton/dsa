@@ -68,5 +68,9 @@ int main(void) {
   shellsort(tmp, LEN);
   array_print("Shell sort", tmp, LEN);
 
+  memcpy(tmp, array, sizeof(array));
+  bogosort(tmp, LEN, 1000000);
+  array_print("Bogo sort", tmp, LEN);
+
   return 0;
 }

@@ -17,5 +17,6 @@ void quicksort(int *array, size_t low, size_t high);
 void mergesort(int *array, size_t low, size_t high);
 void introsort(int *array, size_t length, size_t level);
 void shellsort(int *array, size_t length);
+void bogosort(int *array, size_t length, size_t atempts);
 
 #endif
