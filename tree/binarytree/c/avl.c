@@ -250,7 +250,7 @@ size_t avl_nodes(AVL *avl) {
 }
 
 static size_t levels(Node *node, size_t level) {
-  return node == NULL ? 0 : MAX(levels(node->left, level + 1), levels(node->right, level + 1));
+  return node == NULL ? level : MAX(levels(node->left, level + 1), levels(node->right, level + 1));
 }
 
 size_t avl_levels(AVL *avl) {

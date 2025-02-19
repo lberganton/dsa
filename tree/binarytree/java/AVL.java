@@ -102,7 +102,7 @@ public class AVL implements BSTree {
 
     @Override
     public void traversal(Order order, Consumer<Integer> consumer) {
-        buildList(root, order).stream().forEach(consumer);
+        buildList(root, order).forEach(consumer);
     }
 
     private int height(Node node) {
@@ -188,7 +188,7 @@ public class AVL implements BSTree {
     }
 
     private int levels(Node root, int total) {
-        return root == null ? 0 : Math.max(nodes(root.left, total + 1), nodes(root.right, total + 1));
+        return root == null ? total : Math.max(levels(root.left, total + 1), levels(root.right, total + 1));
     }
 
     @Override
