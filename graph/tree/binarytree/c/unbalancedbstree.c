@@ -72,7 +72,16 @@ void unbalancedbstree_remove(UnbalancedBSTree *bstree, int val) {
   free(tmp);
 }
 
-bool unbalancedbstree_search(UnbalancedBSTree *bstree, int val);
+bool unbalancedbstree_search(UnbalancedBSTree *bstree, int val) {
+Node *n = bstree->root;
+  while (n != NULL) {
+    if (val == n->val) {
+      return true;
+    }
+    n = val < n->val ? n->left : n->right;
+  }
+  return false;
+}
 
 static void node_free(Node *node) {
   if (node == NULL) {
