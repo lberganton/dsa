@@ -2,7 +2,7 @@
 
 # To run the test, provide a path wich contains a "test.c" file.
 
-FLAGS="-std=c99 -g -Wall -Wextra -Wpedantic -Wshadow -fsanitize=address"
+FLAGS="-std=c99 -g -Wall -Wextra -Wpedantic -Wshadow -fno-sanitize-recover -fsanitize=address -fsanitize=undefined"
 TARGET="test"
 
 if [[ ! -d "$1" || ! -f "$1/$TARGET.c" ]]; then

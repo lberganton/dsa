@@ -21,13 +21,13 @@ int main(void) {
   printf("Linear (4): %d\n", linearsearch(array, TAM, 4));
   printf("Linear (5): %d\n", linearsearch(array, TAM, 5));
 
-  printf("Binary (-1): %d\n", linearsearch(array, TAM, -1));
-  printf("Binary (0): %d\n", linearsearch(array, TAM, 0));
-  printf("Binary (1): %d\n", linearsearch(array, TAM, 1));
-  printf("Binary (2): %d\n", linearsearch(array, TAM, 2));
-  printf("Binary (3): %d\n", linearsearch(array, TAM, 3));
-  printf("Binary (4): %d\n", linearsearch(array, TAM, 4));
-  printf("Binary (5): %d\n", linearsearch(array, TAM, 5));
+  printf("Binary (-1): %d\n", binarysearch(array, TAM, -1));
+  printf("Binary (0): %d\n", binarysearch(array, TAM, 0));
+  printf("Binary (1): %d\n", binarysearch(array, TAM, 1));
+  printf("Binary (2): %d\n", binarysearch(array, TAM, 2));
+  printf("Binary (3): %d\n", binarysearch(array, TAM, 3));
+  printf("Binary (4): %d\n", binarysearch(array, TAM, 4));
+  printf("Binary (5): %d\n", binarysearch(array, TAM, 5));
 
   return 0;
 }

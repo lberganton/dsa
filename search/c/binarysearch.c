@@ -15,7 +15,7 @@ int binarysearch(int *array, int length, int val) {
       high = mid - 1;
     }
     else {
-      low = mid - 1;
+      low = mid + 1;
     }
   }
 
