@@ -6,18 +6,18 @@ void consumer(int val) {
 }
 
 int main(void) {
-  printf("UnbalancedBSTree:\n");
-  UnbalancedBSTree *bstree = unbalancedbstree_create();
-  unbalancedbstree_insert(bstree, 1);
-  unbalancedbstree_insert(bstree, 2);
-  unbalancedbstree_insert(bstree, 3);
-  unbalancedbstree_insert(bstree, 4);
-  unbalancedbstree_insert(bstree, 5);
-  unbalancedbstree_insert(bstree, 6);
-  unbalancedbstree_insert(bstree, 7);
-  unbalancedbstree_remove(bstree, 3);
-  unbalancedbstree_traversal(bstree, ORDER_IN, consumer);
-  unbalancedbstree_free(bstree);
+  printf("UBSTree:\n");
+  UBSTree *bstree = ubstree_create();
+  ubstree_insert(bstree, 1);
+  ubstree_insert(bstree, 2);
+  ubstree_insert(bstree, 3);
+  ubstree_insert(bstree, 4);
+  ubstree_insert(bstree, 5);
+  ubstree_insert(bstree, 6);
+  ubstree_insert(bstree, 7);
+  ubstree_remove(bstree, 3);
+  ubstree_traversal(bstree, ORDER_IN, consumer);
+  ubstree_free(bstree);
 
   printf("AVL:\n");
   AVL *avl = avl_create();

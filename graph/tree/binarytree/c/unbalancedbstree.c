@@ -10,12 +10,12 @@ typedef struct Node {
   struct Node *right;
 } Node;
 
-struct UnbalancedBSTree {
+struct UBSTree {
   Node *root;
 };
 
-UnbalancedBSTree* unbalancedbstree_create(void) {
-  UnbalancedBSTree *new = (UnbalancedBSTree*) malloc(sizeof(UnbalancedBSTree));
+UBSTree* ubstree_create(void) {
+  UBSTree *new = (UBSTree*) malloc(sizeof(UBSTree));
   if (new != NULL) {
     new->root = NULL;
   }
@@ -31,7 +31,7 @@ static inline Node* node_create(int val) {
   return new;
 }
 
-void unbalancedbstree_insert(UnbalancedBSTree *bstree, int val) {
+void ubstree_insert(UBSTree *bstree, int val) {
   Node **n = &bstree->root;
 
   while (*n != NULL) {
@@ -44,7 +44,7 @@ void unbalancedbstree_insert(UnbalancedBSTree *bstree, int val) {
   *n = node_create(val);
 }
 
-void unbalancedbstree_remove(UnbalancedBSTree *bstree, int val) {
+void ubstree_remove(UBSTree *bstree, int val) {
   Node **root = &bstree->root;
 
   while (*root == NULL || val != (*root)->val) {
@@ -72,7 +72,7 @@ void unbalancedbstree_remove(UnbalancedBSTree *bstree, int val) {
   free(tmp);
 }
 
-bool unbalancedbstree_search(UnbalancedBSTree *bstree, int val) {
+bool ubstree_search(UBSTree *bstree, int val) {
 Node *n = bstree->root;
   while (n != NULL) {
     if (val == n->val) {
@@ -92,7 +92,7 @@ static void node_free(Node *node) {
   free(node);
 }
 
-void unbalancedbstree_free(UnbalancedBSTree *bstree) {
+void ubstree_free(UBSTree *bstree) {
   node_free(bstree->root);
   free(bstree);
 }
@@ -154,7 +154,7 @@ static void bfs(Node *root, void (*consumer)(int val)) {
   }
 }
 
-void unbalancedbstree_traversal(UnbalancedBSTree *bstree, Order order, void (*consumer)(int val)) {
+void ubstree_traversal(UBSTree *bstree, Order order, void (*consumer)(int val)) {
   switch (order) {
     case ORDER_PRE:
       preoder(bstree->root, consumer);
@@ -174,7 +174,7 @@ static size_t nodes(Node *node) {
   return node == NULL ? 0 : nodes(node->left) + nodes(node->right) + 1;
 }
 
-size_t unbalancedbstree_nodes(UnbalancedBSTree *bstree) {
+size_t ubstree_nodes(UBSTree *bstree) {
   return nodes(bstree->root);
 }
 
@@ -182,6 +182,6 @@ static size_t levels(Node *node, size_t level) {
   return node == NULL ? level : MAX(levels(node->left, level + 1), levels(node->right, level + 1));
 }
 
-size_t unbalancedbstree_levels(UnbalancedBSTree *bstree) {
+size_t ubstree_levels(UBSTree *bstree) {
   return levels(bstree->root, 0);
 }
