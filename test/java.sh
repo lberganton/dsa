@@ -4,7 +4,7 @@
 
 MAIN="Test"
 
-if [[ ! -d "$1" || ! -f "$1/$MAIN.java" ]]; then
+if [ ! -f "$1/$MAIN.java" ]; then
   echo "Error: Invalid path. You must provide a path that has a $MAIN.java file."
   exit 1
 fi

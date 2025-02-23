@@ -8,9 +8,8 @@ bubblesort: ; RDI: int *array, RSI: size_t length
 
   mov rbx, rdi
   mov rcx, rsi
-  dec rcx
 
-  test rcx, rcx
+  dec rcx
   jz .done
 
   .outer_loop:
