@@ -1,4 +1,5 @@
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 public class Test {
     public static void main(String[] args) {
@@ -8,6 +9,10 @@ public class Test {
         printArray("Original", array);
 
         int[] tmp = array.clone();
+        Arrays.sort(tmp);
+        printArray("Expected", tmp);
+
+        System.arraycopy(array, 0, tmp, 0, array.length);
         BubbleSort.sort(tmp);
         printArray("Bubble Sort", tmp);
 

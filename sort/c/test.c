@@ -27,6 +27,12 @@ size_t int_log2(size_t n) {
   return log;
 }
 
+int comparator(const void *val1, const void *val2) {
+  int i1 = *(int*) val1;
+  int i2 = *(int*) val2;
+  return i1 == i2 ? 0 : i1 < i2 ? -1 : 1;
+}
+
 int main(void) {
   const size_t LEN = 10;
 
@@ -35,6 +41,10 @@ int main(void) {
   array_print("Original", array, LEN);
 
   int tmp[LEN];
+
+  memcpy(tmp, array, sizeof(array));
+  qsort(tmp, LEN, sizeof(int), comparator);
+  array_print("Expected", tmp, LEN);
 
   memcpy(tmp, array, sizeof(array));
   bubblesort(tmp, LEN);

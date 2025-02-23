@@ -11,10 +11,7 @@ selectionsort: ; RDI: int *array, RSI: size_t length
   dec rcx
 
   test rcx, rcx
-  jnz .outer_loop
-
-  pop rbx
-  ret
+  jz .done
 
   .outer_loop:
     mov rsi, rbx
@@ -42,5 +39,6 @@ selectionsort: ; RDI: int *array, RSI: size_t length
     dec rcx
     jnz .outer_loop
 
-  pop rbx
-  ret
+  .done:
+    pop rbx
+    ret
