@@ -49,5 +49,9 @@ int main(void) {
   insertionsort(tmp, LEN);
   array_print("Insertion sort", tmp, LEN);
 
+  memcpy(tmp, array, sizeof(array));
+  quicksort(tmp, 0, LEN - 1);
+  array_print("Quick sort", tmp, LEN);
+
   return 0;
 }
