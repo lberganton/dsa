@@ -1,5 +1,5 @@
-#ifndef _BST_H
-#define _BST_H
+#ifndef BST_H
+#define BST_H
 
 #include <stdbool.h>
 #include <stddef.h>
