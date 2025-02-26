@@ -14,6 +14,8 @@
 %define UBSTREE_SIZE 8
 %define NODE_SIZE 24
 
+%define QLEN 1024
+
 ; struct BSTree {
 ;   Node *root  : 8 bytes
 ; }
@@ -341,6 +343,74 @@ post_order: ; (RDI: Node *node, RSI: (*consumer)(RDI: int val))
     mov edi, [rdi + NODE_OFFSET_VAL]
     jmp rsi
 
+bfs: ; (RDI: Node *node, RSI: (*consumer)(RDI: int val))
+  push rbx
+
+  sub rsp, QLEN * 8
+  xor rbx, rbx
+  mov rcx, 1
+  mov [rsp], rdi
+
+  cmp rdi, NULL
+  je .done
+
+  .iteration:
+    test rcx, rcx
+    jz .done
+
+    mov rdi, [rsp + rbx * 8]
+    dec rcx
+
+    push rbx
+    push rcx
+    push rdi
+    push rsi
+
+    mov edi, [rdi + NODE_OFFSET_VAL]
+    call rsi
+
+    pop rsi
+    pop rdi
+    pop rcx
+    pop rbx
+
+    cmp rcx, QLEN
+    jge .next
+
+    cmp qword [rdi + NODE_OFFSET_LEFT], NULL
+    je .right
+
+    lea rdx, [rbx + rcx + 1]
+    and rdx, (QLEN >> 1) - 1
+
+    mov rax, [rdi + NODE_OFFSET_LEFT]
+    mov [rsp + rdx * 8], rax
+    inc rcx
+
+    .right:
+      cmp rcx, QLEN
+      jge .next
+
+      cmp qword [rdi + NODE_OFFSET_RIGHT], NULL
+      je .next
+
+      lea rdx, [rbx + rcx + 1]
+      and rdx, (QLEN >> 1) - 1
+
+      mov rax, [rdi + NODE_OFFSET_RIGHT]
+      mov [rsp + rdx * 8], rax
+      inc rcx
+
+    .next:
+      inc rbx
+      and rbx, (QLEN >> 1) - 1
+      jmp .iteration
+
+  .done:
+    add rsp, QLEN * 8
+    pop rbx
+    ret
+
 global ubstree_traversal
 ubstree_traversal: ; (RDI: UBSTree *bstree, RSI: Order order, RDX: (*consumer)(RDI: int val))
   mov rax, rsi
@@ -355,6 +425,9 @@ ubstree_traversal: ; (RDI: UBSTree *bstree, RSI: Order order, RDX: (*consumer)(R
 
   cmp rax, ORDER_POST
   je post_order
+
+  cmp rax, ORDER_BFS
+  je bfs
 
   ret
 
