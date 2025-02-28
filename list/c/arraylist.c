@@ -175,7 +175,7 @@ bool arraylist_allmatch(ArrayList *list, bool (*predicate)(int val)) {
 static void filter_inplace(ArrayList *list, bool (*predicate)(int val)) {
   for (size_t i = 0; i < list->elements; i++) {
     if (!predicate(list->array[i])) {
-      arraylist_remove(list, 0, NULL);
+      arraylist_remove(list, i, NULL);
     }
   }
 }
