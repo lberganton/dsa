@@ -140,7 +140,7 @@ balance: ; (RDI: Node *node) -> Node*
     pop rdi
 
     cmp rax, 0
-    jnl .not_RL
+    jnl .not_LR
 
     push rdi
     mov rdi, [rdi + NODE_OFFSET_LEFT]
@@ -148,7 +148,7 @@ balance: ; (RDI: Node *node) -> Node*
     pop rdi
     mov [rdi + NODE_OFFSET_LEFT], rax
 
-    .not_RL:
+    .not_LR:
       call RR
       mov rdi, rax
 
@@ -168,7 +168,7 @@ balance: ; (RDI: Node *node) -> Node*
     pop rdi
 
     cmp rax, 0
-    jng .not_LR
+    jng .not_RL
 
     push rdi
     mov rdi, [rdi + NODE_OFFSET_RIGHT]
@@ -176,7 +176,7 @@ balance: ; (RDI: Node *node) -> Node*
     pop rdi
     mov [rdi + NODE_OFFSET_RIGHT], rax
 
-    .not_LR:
+    .not_RL:
       call LL
       mov rdi, rax
 
