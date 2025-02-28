@@ -5,42 +5,191 @@
 %define ORDER_POST  2
 %define ORDER_BFS   3
 
-%define UBSTREE_OFFSET_ROOT 0
+%define AVL_OFFSET_ROOT 0
 
-%define NODE_OFFSET_VAL   0
-%define NODE_OFFSET_LEFT  NODE_OFFSET_VAL   + 8
-%define NODE_OFFSET_RIGHT NODE_OFFSET_LEFT  + 8
+%define NODE_OFFSET_VAL     0
+%define NODE_OFFSET_LEFT    NODE_OFFSET_VAL   + 8
+%define NODE_OFFSET_RIGHT   NODE_OFFSET_LEFT  + 8
+%define NODE_OFFSET_HEIGHT  NODE_OFFSET_RIGHT + 8
 
-%define UBSTREE_SIZE 8
-%define NODE_SIZE 24
+%define AVL_SIZE 8
+%define NODE_SIZE 32
 
 %define QLEN 1024
 
-; struct UBSTree {
+; struct AVL {
 ;   Node *root  : 8 bytes
 ; }
 ;
 ; struct Node {
-;   int val     : 4 bytes + (padding = 4 bytes)
-;   Node *left  : 8 bytes
-;   Node *right : 8 bytes
+;   int val       : 4 bytes + (padding = 4 bytes)
+;   Node *left    : 8 bytes
+;   Node *right   : 8 bytes
+;   size_t height : 8 bytes
 ; }
 
 section .text
   extern malloc
   extern free
 
-global ubstree_create
-ubstree_create: ; () -> RAX: UBSTree*
-  mov rdi, UBSTREE_SIZE
+global avl_create
+avl_create: ; () -> RAX: UBSTree*
+  mov rdi, AVL_SIZE
   call malloc wrt ..plt
 
   cmp rax, NULL
   je .done
 
-  mov qword [rax + UBSTREE_OFFSET_ROOT], NULL
+  mov qword [rax + AVL_OFFSET_ROOT], NULL
 
   .done:
+    ret
+
+height: ; (RDI: Node *node) -> size_t
+  xor rax, rax
+
+  cmp rdi, NULL
+  jne .left
+  ret
+
+  .left:
+    cmp qword [rdi + NODE_OFFSET_LEFT], NULL
+    je .right
+
+    mov rsi, [rdi + NODE_OFFSET_LEFT]
+    mov rax, [rsi + NODE_OFFSET_HEIGHT]
+
+  .right:
+    cmp qword [rdi + NODE_OFFSET_RIGHT], NULL
+    je .done
+
+    mov rsi, [rdi + NODE_OFFSET_RIGHT]
+    cmp [rsi + NODE_OFFSET_HEIGHT], rax
+    cmovg rax, [rsi + NODE_OFFSET_HEIGHT]
+
+  .done:
+    inc rax
+    ret
+
+LL: ; (RDI: Node *node) -> Node*
+  mov rsi, [rdi + NODE_OFFSET_RIGHT]
+
+  mov rax, [rsi + NODE_OFFSET_LEFT]
+  mov [rdi + NODE_OFFSET_RIGHT], rax
+  mov [rsi + NODE_OFFSET_LEFT], rdi
+
+  push rsi
+  push rdi
+  call height
+  pop rdi
+
+  mov [rdi + NODE_OFFSET_HEIGHT], rax
+  pop rax
+  ret
+
+RR: ; (RDI: Node *node) -> Node*
+  mov rsi, [rdi + NODE_OFFSET_LEFT]
+
+  mov rax, [rsi + NODE_OFFSET_RIGHT]
+  mov [rdi + NODE_OFFSET_LEFT], rax
+  mov [rsi + NODE_OFFSET_RIGHT], rdi
+
+  push rsi
+  push rdi
+  call height
+  pop rdi
+
+  mov [rdi + NODE_OFFSET_HEIGHT], rax
+  pop rax
+  ret
+
+balance_factor: ; (RDI: Node *node) -> int
+  push rdi
+  mov rdi, [rdi + NODE_OFFSET_LEFT]
+  call height
+  pop rdi
+
+  push rax
+  mov rdi, [rdi + NODE_OFFSET_RIGHT]
+  call height
+
+  mov rdi, rax
+  pop rax
+
+  sub rax, rdi
+  ret
+
+balance: ; (RDI: Node *node) -> Node*
+  cmp rdi, NULL
+  jne .left
+
+  mov rax, NULL
+  ret
+
+  .left:
+    push rdi
+    call balance_factor
+    pop rdi
+
+    cmp rax, 1
+    jng .right
+
+    push rdi
+    mov rdi, [rdi + NODE_OFFSET_LEFT]
+    call balance_factor
+    pop rdi
+
+    cmp rax, 0
+    jnl .not_RL
+
+    push rdi
+    mov rdi, [rdi + NODE_OFFSET_LEFT]
+    call LL
+    pop rdi
+    mov [rdi + NODE_OFFSET_LEFT], rax
+
+    .not_RL:
+      call RR
+      mov rdi, rax
+
+    jmp .height
+
+  .right:
+    push rdi
+    call balance_factor
+    pop rdi
+
+    cmp rax, -1
+    jnl .done
+
+    push rdi
+    mov rdi, [rdi + NODE_OFFSET_RIGHT]
+    call balance_factor
+    pop rdi
+
+    cmp rax, 0
+    jng .not_LR
+
+    push rdi
+    mov rdi, [rdi + NODE_OFFSET_RIGHT]
+    call RR
+    pop rdi
+    mov [rdi + NODE_OFFSET_RIGHT], rax
+
+    .not_LR:
+      call LL
+      mov rdi, rax
+
+    jmp .height
+
+  .height:
+    push rdi
+    call height
+    pop rdi
+    mov [rdi + NODE_OFFSET_HEIGHT], rax
+
+  .done:
+    mov rax, rdi
     ret
 
 node_alloc: ; (RDI: int val) -> Node*
@@ -57,6 +206,7 @@ node_alloc: ; (RDI: int val) -> Node*
   mov [rax + NODE_OFFSET_VAL], edi
   mov qword [rax + NODE_OFFSET_LEFT], NULL
   mov qword [rax + NODE_OFFSET_RIGHT], NULL
+  mov qword [rax + NODE_OFFSET_HEIGHT], 1
 
   .done:
     ret
@@ -99,18 +249,18 @@ insert: ; (RDI: Node *node, RSI: int val) -> Node*
     mov rdi, rax
 
   .done:
-    mov rax, rdi
+    call balance
     ret
 
-global ubstree_insert
-ubstree_insert: ; (RDI: UBSTree *bstree, RSI: int val)
+global avl_insert
+avl_insert: ; (RDI: UBSTree *bstree, RSI: int val)
   push rdi
 
-  mov rdi, [rdi + UBSTREE_OFFSET_ROOT]
+  mov rdi, [rdi + AVL_OFFSET_ROOT]
   call insert
 
   pop rdi
-  mov [rdi + UBSTREE_OFFSET_ROOT], rax
+  mov [rdi + AVL_OFFSET_ROOT], rax
 
   ret
 
@@ -190,18 +340,18 @@ remove: ; (RDI: Node *node, RSI: int val) -> Node*
     mov [rdi + NODE_OFFSET_LEFT], rax
 
   .done:
-    mov rax, rdi
+    call balance
     ret
 
-global ubstree_remove
-ubstree_remove: ; (RDI: UBSTree *bstree, RSI: int val)
+global avl_remove
+avl_remove: ; (RDI: UBSTree *bstree, RSI: int val)
   push rdi
 
-  mov rdi, [rdi + UBSTREE_OFFSET_ROOT]
+  mov rdi, [rdi + AVL_OFFSET_ROOT]
   call remove
 
   pop rdi
-  mov [rdi + UBSTREE_OFFSET_ROOT], rax
+  mov [rdi + AVL_OFFSET_ROOT], rax
 
   ret
 
@@ -228,9 +378,9 @@ search: ; (RDI: Node *node, RSI: int val) -> RAX: bool
     mov rdi, [rdi + NODE_OFFSET_RIGHT]
     jmp search
 
-global ubstree_search
-ubstree_search: ; (RDI: UBSTree *bstree, RSI: int val) -> RAX: bool
-  mov rdi, [rdi + UBSTREE_OFFSET_ROOT]
+global avl_search
+avl_search: ; (RDI: UBSTree *bstree, RSI: int val) -> RAX: bool
+  mov rdi, [rdi + AVL_OFFSET_ROOT]
   jmp search
 
 node_free: ; (RDI: Node *node)
@@ -252,11 +402,11 @@ node_free: ; (RDI: Node *node)
     pop rdi
     jmp free wrt ..plt
 
-global ubstree_free
-ubstree_free: ; (RDI: UBSTree *bstree, RSI: int val)
+global avl_free
+avl_free: ; (RDI: UBSTree *bstree, RSI: int val)
   push rdi
 
-  mov rdi, [rdi + UBSTREE_OFFSET_ROOT]
+  mov rdi, [rdi + AVL_OFFSET_ROOT]
   call node_free
 
   pop rdi
@@ -411,11 +561,11 @@ bfs: ; (RDI: Node *node, RSI: (*consumer)(RDI: int val))
     pop rbx
     ret
 
-global ubstree_traversal
-ubstree_traversal: ; (RDI: UBSTree *bstree, RSI: Order order, RDX: (*consumer)(RDI: int val))
+global avl_traversal
+avl_traversal: ; (RDI: UBSTree *bstree, RSI: Order order, RDX: (*consumer)(RDI: int val))
   mov rax, rsi
   mov rsi, rdx
-  mov rdi, [rdi + UBSTREE_OFFSET_ROOT]
+  mov rdi, [rdi + AVL_OFFSET_ROOT]
 
   cmp rax, ORDER_PRE
   je pre_order
@@ -448,10 +598,10 @@ nodes: ; (RDI: Node *node) -> size_t
   .done:
     ret
 
-global ubstree_nodes
-ubstree_nodes: ; (RDI: UBSTree *bstree) -> size_t
+global avl_nodes
+avl_nodes: ; (RDI: UBSTree *bstree) -> size_t
   xor rax, rax
-  mov rdi, [rdi + UBSTREE_OFFSET_ROOT]
+  mov rdi, [rdi + AVL_OFFSET_ROOT]
   jmp nodes
 
 levels: ; (RDI: Node *node, RSI: size_t level) -> size_t
@@ -483,8 +633,8 @@ levels: ; (RDI: Node *node, RSI: size_t level) -> size_t
     mov rax, rsi
     ret
 
-global ubstree_levels
-ubstree_levels: ; (RDI: UBSTree *bstree) -> size_t
-  mov rdi, [rdi + UBSTREE_OFFSET_ROOT]
+global avl_levels
+avl_levels: ; (RDI: UBSTree *bstree) -> size_t
+  mov rdi, [rdi + AVL_OFFSET_ROOT]
   xor rsi, rsi
   jmp levels
