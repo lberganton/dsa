@@ -6,6 +6,7 @@ void consumer(int val) {
 }
 
 int main(void) {
+  printf("ArrayList:\n");
   ArrayList* al = arraylist_create(0);
 
   arraylist_pushright(al, 7);
@@ -21,5 +22,22 @@ int main(void) {
   arraylist_foreach(al, consumer);
 
   arraylist_free(al);
+
+  printf("LinkedList:\n");
+  LinkedList* ll = linkedlist_create();
+
+  linkedlist_pushright(ll, 7);
+  linkedlist_pushright(ll, 4);
+  linkedlist_pushright(ll, 5);
+  linkedlist_pushright(ll, 3);
+  linkedlist_pushright(ll, 2);
+  linkedlist_pushright(ll, 1);
+  linkedlist_pushright(ll, 6);
+
+  linkedlist_sort(ll);
+  linkedlist_reverse(ll);
+  linkedlist_foreach(ll, consumer);
+
+  linkedlist_free(ll);
   return 0;
 }
