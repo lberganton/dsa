@@ -18,10 +18,8 @@ void array_print(const char *msg, int *array, size_t length) {
   }
 }
 
-int comparator(const void *val1, const void *val2) {
-  int i1 = *(int*) val1;
-  int i2 = *(int*) val2;
-  return i1 == i2 ? 0 : i1 < i2 ? -1 : 1;
+int compare(const void *val1, const void *val2) {
+  return *(int*) val1 - *(int*) val2;
 }
 
 int main(void) {
@@ -34,7 +32,7 @@ int main(void) {
   int tmp[LEN];
 
   memcpy(tmp, array, sizeof(array));
-  qsort(tmp, LEN, sizeof(int), comparator);
+  qsort(tmp, LEN, sizeof(int), compare);
   array_print("Expected", tmp, LEN);
 
   memcpy(tmp, array, sizeof(array));

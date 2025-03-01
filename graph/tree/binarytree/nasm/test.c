@@ -5,14 +5,9 @@ void consumer(int val) {
   printf("%d\n", val);
 }
 
-void h(size_t l) {
-  printf("%zu\n", l);
-}
-
 int main(void) {
   printf("UBSTree:\n");
   UBSTree *bstree = ubstree_create();
-
   ubstree_insert(bstree, 4);
   ubstree_insert(bstree, 2);
   ubstree_insert(bstree, 6);
@@ -30,7 +25,6 @@ int main(void) {
 
   printf("AVL:\n");
   AVL *avl = avl_create();
-
   avl_insert(avl, 1);
   avl_insert(avl, 2);
   avl_insert(avl, 3);
