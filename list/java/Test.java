@@ -1,18 +1,23 @@
 public class Test {
     public static void main(String[] args) {
-        ArrayList l = new ArrayList();
+        testList(new ArrayList());
+        testList(new LinkedList());
+    }
 
-        l.pushRight(7);
-        l.pushRight(4);
-        l.pushRight(5);
-        l.pushRight(3);
-        l.pushRight(2);
-        l.pushRight(1);
-        l.pushRight(6);
+    public static void testList(List list) {
+        System.out.printf("%s:%n", list.getClass().getSimpleName());
 
-        l.sort();
-        l.reverse();
+        list.pushRight(7);
+        list.pushRight(4);
+        list.pushRight(5);
+        list.pushRight(3);
+        list.pushRight(2);
+        list.pushRight(1);
+        list.pushRight(6);
 
-        System.out.println(l);
+        list.sort();
+        list.reverse();
+
+        System.out.println(list);
     }
 }
