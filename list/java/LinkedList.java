@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
@@ -16,6 +17,11 @@ public class LinkedList implements List {
     @Override
     public Iterator<Integer> iterator() {
         return new Itr();
+    }
+
+    @Override
+    public ListIterator<Integer> listIterator() {
+        return new ListItr();
     }
 
     private Node getNode(int index) {
@@ -38,6 +44,27 @@ public class LinkedList implements List {
         }
 
         return node;
+    }
+
+    private void insert(int val, Node node) {
+        Node n = new Node(val);
+
+        n.back = node.back;
+        n.next = node;
+
+        if (node == head) {
+            head.back = n;
+        }
+        if (node == tail) {
+            tail.next = n;
+        }
+
+        if (node.back != null) {
+            node.back.next = n;
+        }
+        if (node.next != null) {
+            node.next.back = n;
+        }
     }
 
     @Override
@@ -79,7 +106,7 @@ public class LinkedList implements List {
         insert(val, elements);
     }
 
-    private void removeNode(Node node) {
+    private void remove(Node node) {
         if (node == head) {
             head = head.next;
         }
@@ -102,7 +129,7 @@ public class LinkedList implements List {
         }
 
         Node node = getNode(index);
-        removeNode(node);
+        remove(node);
         elements--;
 
         return node.val;
@@ -255,7 +282,7 @@ public class LinkedList implements List {
         while (node != null) {
             Node tmp = node.next;
             if (!predicate.test(node.val)) {
-                removeNode(node);
+                remove(node);
                 elements--;
             }
             node = tmp;
@@ -402,9 +429,94 @@ public class LinkedList implements List {
             if (lastReturn == null) {
                 throw new IllegalStateException();
             }
-            LinkedList.this.removeNode(lastReturn);
+            LinkedList.this.remove(lastReturn);
             lastReturn = null;
             dummy = dummy.back;
+        }
+    }
+
+    private class ListItr implements ListIterator<Integer> {
+        int index = -1;
+        Node dummy = new Node(0, null, head);
+        Node lastReturn = null;
+
+        @Override
+        public boolean hasNext() {
+            return dummy.next != null;
+        }
+
+        @Override
+        public Integer next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            index++;
+            dummy = dummy.next;
+            lastReturn = dummy;
+            return dummy.val;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return dummy.back != null;
+        }
+
+        @Override
+        public Integer previous() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            index--;
+            dummy = dummy.back;
+            lastReturn = dummy;
+            return dummy.val;
+        }
+
+        @Override
+        public int nextIndex() {
+            return index + 1;
+        }
+
+        @Override
+        public int previousIndex() {
+            return index;
+        }
+
+        @Override
+        public void remove() {
+            if (lastReturn != null) {
+                throw new IllegalStateException();
+            }
+            LinkedList.this.remove(lastReturn);
+            lastReturn = null;
+            dummy = dummy.back;
+            index--;
+        }
+
+        @Override
+        public void set(Integer e) {
+            if (lastReturn != null) {
+                throw new IllegalStateException();
+            }
+            lastReturn.val = e;
+        }
+
+        @Override
+        public void add(Integer e) {
+            if (index == -1) {
+                LinkedList.this.insert(e, 0);
+                dummy = LinkedList.this.head;
+            }
+            else if (index + 1 == LinkedList.this.elements) {
+                LinkedList.this.insert(e, elements);
+                dummy = LinkedList.this.tail;
+            }
+            else {
+                dummy = dummy.next;
+                LinkedList.this.insert(e, dummy);
+                dummy = dummy.back;
+            }
+            index++;
         }
     }
 }

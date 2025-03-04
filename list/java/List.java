@@ -1,4 +1,4 @@
-import java.util.Comparator;
+import java.util.ListIterator;
 import java.util.OptionalInt;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
@@ -53,4 +53,6 @@ public interface List extends Iterable<Integer> {
     void reverse();
 
     int size();
+
+    ListIterator<Integer> listIterator();
 }
