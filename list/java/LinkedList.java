@@ -65,6 +65,8 @@ public class LinkedList implements List {
         if (node.next != null) {
             node.next.back = n;
         }
+
+        elements++;
     }
 
     @Override

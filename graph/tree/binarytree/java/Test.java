@@ -5,6 +5,8 @@ public class Test {
     }
 
     public static void BSTreeTest(BSTree tree) {
+        System.out.printf("%s:%n", tree.getClass().getSimpleName());
+
         tree.insert(1);
         tree.insert(2);
         tree.insert(3);
@@ -13,7 +15,6 @@ public class Test {
         tree.insert(6);
         tree.insert(7);
 
-        System.out.printf("%s:%n", tree.getClass().getSimpleName());
         System.out.println(tree);
         tree.remove(3);
         System.out.println("remove(3): " + tree);
