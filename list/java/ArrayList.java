@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -33,9 +34,7 @@ public class ArrayList implements List {
         }
 
         if (elements == array.length) {
-            int[] newArray = new int[array.length * 2];
-            System.arraycopy(array, 0, newArray, 0, array.length);
-            array = newArray;
+            array = Arrays.copyOf(array, array.length * 2);
         }
 
         for (int i = elements; i > index; i--) {
@@ -345,13 +344,13 @@ public class ArrayList implements List {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof ArrayList l) || elements != l.elements) {
+        if (!(obj instanceof List l) || size() != l.size()) {
             return false;
         }
 
-        ArrayList other = (ArrayList) obj;
-        for (int i = 0; i < elements; i++) {
-            if (array[i] != other.array[i]) {
+        Iterator<Integer> iterator = l.iterator();
+        for (int i : this) {
+            if (i != iterator.next()) {
                 return false;
             }
         }

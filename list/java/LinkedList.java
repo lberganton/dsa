@@ -352,18 +352,15 @@ public class LinkedList implements List {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof LinkedList l) || elements != l.elements) {
+        if (!(obj instanceof List l) || size() != l.size()) {
             return false;
         }
 
-        Node n1 = head;
-        Node n2 = ((LinkedList) obj).head;
-        while (n1 != null) {
-            if (n1.val != n2.val) {
+        Iterator<Integer> iterator = l.iterator();
+        for (int i : this) {
+            if (i != iterator.next()) {
                 return false;
             }
-            n1 = n1.next;
-            n2 = n2.next;
         }
 
         return true;
