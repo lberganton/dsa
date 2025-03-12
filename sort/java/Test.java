@@ -45,6 +45,10 @@ public class Test {
         printArray("Shell Sort", tmp);
 
         System.arraycopy(array, 0, tmp, 0, array.length);
+        CountingSort.sort(tmp);
+        printArray("Counting Sort", tmp);
+
+        System.arraycopy(array, 0, tmp, 0, array.length);
         BogoSort.sort(tmp, 1000000);
         printArray("Bogo Sort", tmp);
     }
