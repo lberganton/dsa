@@ -77,6 +77,10 @@ int main(void) {
   array_print("Shell sort", tmp, LEN);
 
   memcpy(tmp, array, sizeof(array));
+  countingsort(tmp, LEN);
+  array_print("Counting Sort", tmp, LEN);
+
+  memcpy(tmp, array, sizeof(array));
   bogosort(tmp, LEN, 1000000);
   array_print("Bogo sort", tmp, LEN);
 
