@@ -18,11 +18,13 @@ static void shuffle(int *array, size_t length) {
   }
 }
 
-void bogosort(int *array, size_t length, size_t atempts) {
+void bogosort(int *array, size_t length, size_t attempts) {
   size_t cur = 0;
   srand(time(NULL));
-  while (!issorted(array, length) && (atempts == 0 || cur < atempts)) {
+  while (!issorted(array, length) && (attempts == 0 || cur < attempts)) {
+    if (attempts > 0) {
+      cur++;
+    }
     shuffle(array, length);
-    cur++;
   }
 }

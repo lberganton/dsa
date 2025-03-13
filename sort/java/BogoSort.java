@@ -1,12 +1,14 @@
 import java.security.SecureRandom;
 
 public class BogoSort {
-    public static void sort(int[] array, int atempts) {
+    public static void sort(int[] array, int attempts) {
         int cur = 0;
         SecureRandom random = new SecureRandom();
-        while (!isSorted(array) && (atempts == 0 || cur < atempts)) {
+        while (!isSorted(array) && (attempts <= 0 || cur < attempts)) {
+            if (attempts > 0) {
+                cur++;
+            }
             shuffle(array, random);
-            cur++;
         }
     }
 
