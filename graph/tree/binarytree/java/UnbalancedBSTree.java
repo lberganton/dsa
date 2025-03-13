@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Stack;
 import java.util.function.Consumer;
 
 public class UnbalancedBSTree implements BSTree {
@@ -132,7 +131,7 @@ public class UnbalancedBSTree implements BSTree {
 
         switch (order) {
             case PRE -> {
-                Stack<Node> stack = new Stack<>();
+                Deque<Node> stack = new ArrayDeque<>();
                 stack.push(root);
                 while (!stack.isEmpty()) {
                     Node n = stack.pop();
@@ -147,7 +146,7 @@ public class UnbalancedBSTree implements BSTree {
                 }
             }
             case IN -> {
-                Stack<Node> stack = new Stack<>();
+                Deque<Node> stack = new ArrayDeque<>();
                 Node n = root;
                 while (n != null || !stack.isEmpty()) {
                     while (n != null) {
@@ -160,7 +159,7 @@ public class UnbalancedBSTree implements BSTree {
                 }
             }
             case POST -> {
-                Stack<Node> stack = new Stack<>();
+                Deque<Node> stack = new ArrayDeque<>();
                 stack.push(root);
                 while (!stack.isEmpty()) {
                     Node n = stack.pop();
