@@ -95,7 +95,7 @@ public class LinkedStack implements Stack {
     }
 
     private class Itr implements Iterator<Integer> {
-        Node cursor = top;
+        Node cursor = LinkedStack.this.top;
 
         @Override
         public boolean hasNext() {

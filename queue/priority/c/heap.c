@@ -8,21 +8,17 @@ struct Heap {
   int (*comparator)(int val1, int val2);
 };
 
-static inline int max_comparator(int val1, int val2) {
+static inline int default_comparator(int val1, int val2) {
   return val1 - val2;
 }
 
-static inline int min_comparator(int val1, int val2) {
-  return val2 - val1;
-}
-
-Heap* heap_create(size_t initial_capacity, bool max) {
+Heap* heap_create(size_t initial_capacity, int (*comparator)(int val1, int val2)) {
   Heap *new = (Heap*) malloc(sizeof(Heap));
   if (new == NULL) {
     return NULL;
   }
 
-  new->comparator = max ? max_comparator : min_comparator;
+  new->comparator = comparator == NULL ? default_comparator : comparator;
   new->allocated = initial_capacity != 0 ? initial_capacity : 16;
   new->elements = 0;
 
@@ -116,6 +112,24 @@ bool heap_peek(Heap *heap, int *ret) {
   }
   *ret = heap->array[0];
   return true;
+}
+
+bool heap_equals(Heap *first, Heap *second) {
+  if (first->elements != second->elements) {
+    return false;
+  }
+  for (size_t i = 0; i < first->elements; i++) {
+    if (first->array[i] != second->array[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void heap_foreach(Heap *heap, void (*consumer)(int val)) {
+  for (size_t i = 0; i < heap->elements; i++) {
+    consumer(heap->array[i]);
+  }
 }
 
 void heap_free(Heap *heap) {

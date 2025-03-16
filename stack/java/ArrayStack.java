@@ -98,7 +98,7 @@ public class ArrayStack implements Stack {
     }
 
     private class Itr implements Iterator<Integer> {
-        int cursor = top;
+        int cursor = ArrayStack.this.top;
 
         @Override
         public boolean hasNext() {
