@@ -1,6 +1,8 @@
 #include "algorithms.h"
 #include <stdio.h>
 
+#define INSERTION_LENGTH 16
+
 static size_t quicksort_partition(int *array, size_t low, size_t high) {
   int pivot = array[high];
   size_t pos = low;
