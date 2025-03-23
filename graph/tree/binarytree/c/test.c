@@ -40,5 +40,22 @@ int main(void) {
   avl_traversal(avl, ORDER_BFS, consumer);
   avl_free(avl);
 
+  printf("RBTree:\n");
+  RBTree *rbtree = rbtree_create();
+  rbtree_insert(rbtree, 1);
+  rbtree_insert(rbtree, 2);
+  rbtree_insert(rbtree, 3);
+  rbtree_insert(rbtree, 4);
+  rbtree_insert(rbtree, 5);
+  rbtree_insert(rbtree, 6);
+  rbtree_insert(rbtree, 7);
+  // rbtree_remove(rbtree, 3);
+  printf("nodes(): %zu\n", rbtree_nodes(rbtree));
+  printf("levels(): %zu\n", rbtree_levels(rbtree));
+  printf("search(3): %d\n", rbtree_search(rbtree, 3));
+  printf("search(4): %d\n", rbtree_search(rbtree, 4));
+  rbtree_traversal(rbtree, ORDER_BFS, consumer);
+  rbtree_free(rbtree);
+
   return 0;
 }

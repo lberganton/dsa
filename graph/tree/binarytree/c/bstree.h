@@ -6,6 +6,7 @@
 
 typedef struct UBSTree UBSTree;
 typedef struct AVL AVL;
+typedef struct RBTree RBTree;
 
 typedef enum Order {
   ORDER_PRE, ORDER_IN, ORDER_POST, ORDER_BFS
@@ -28,5 +29,14 @@ void      avl_free(AVL *avl);
 void      avl_traversal(AVL *avl, Order order, void (*consumer)(int val));
 size_t    avl_nodes(AVL *avl);
 size_t    avl_levels(AVL *avl);
+
+RBTree*   rbtree_create(void);
+void      rbtree_insert(RBTree *rbtree, int val);
+void      rbtree_remove(RBTree *rbtree, int val);
+bool      rbtree_search(RBTree *rbtree, int val);
+void      rbtree_free(RBTree *rbtree);
+void      rbtree_traversal(RBTree *rbtree, Order order, void (*consumer)(int val));
+size_t    rbtree_nodes(RBTree *rbtree);
+size_t    rbtree_levels(RBTree *rbtree);
 
 #endif
