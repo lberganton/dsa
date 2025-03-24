@@ -2,6 +2,7 @@ public class Test {
     public static void main(String[] args) {
         BSTreeTest(new UnbalancedBSTree());
         BSTreeTest(new AVL());
+        BSTreeTest(new RBTree());
     }
 
     public static void BSTreeTest(BSTree tree) {
