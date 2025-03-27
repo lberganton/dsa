@@ -33,7 +33,7 @@ section .text
   extern free
 
 global avl_create
-avl_create: ; () -> RAX: UBSTree*
+avl_create: ; () -> RAX: AVL*
   mov rdi, AVL_SIZE
   call malloc wrt ..plt
 
@@ -253,7 +253,7 @@ insert: ; (RDI: Node *node, RSI: int val) -> Node*
     ret
 
 global avl_insert
-avl_insert: ; (RDI: UBSTree *bstree, RSI: int val)
+avl_insert: ; (RDI: AVL *bstree, RSI: int val)
   push rdi
 
   mov rdi, [rdi + AVL_OFFSET_ROOT]
@@ -344,7 +344,7 @@ remove: ; (RDI: Node *node, RSI: int val) -> Node*
     ret
 
 global avl_remove
-avl_remove: ; (RDI: UBSTree *bstree, RSI: int val)
+avl_remove: ; (RDI: AVL *bstree, RSI: int val)
   push rdi
 
   mov rdi, [rdi + AVL_OFFSET_ROOT]
@@ -379,7 +379,7 @@ search: ; (RDI: Node *node, RSI: int val) -> RAX: bool
     jmp search
 
 global avl_search
-avl_search: ; (RDI: UBSTree *bstree, RSI: int val) -> RAX: bool
+avl_search: ; (RDI: AVL *bstree, RSI: int val) -> RAX: bool
   mov rdi, [rdi + AVL_OFFSET_ROOT]
   jmp search
 
@@ -403,7 +403,7 @@ node_free: ; (RDI: Node *node)
     jmp free wrt ..plt
 
 global avl_free
-avl_free: ; (RDI: UBSTree *bstree, RSI: int val)
+avl_free: ; (RDI: AVL *bstree, RSI: int val)
   push rdi
 
   mov rdi, [rdi + AVL_OFFSET_ROOT]
@@ -527,15 +527,16 @@ bfs: ; (RDI: Node *node, RSI: (*consumer)(RDI: int val))
     cmp rcx, QLEN
     jge .next
 
-    cmp qword [rdi + NODE_OFFSET_LEFT], NULL
-    je .right
+    .left:
+      cmp qword [rdi + NODE_OFFSET_LEFT], NULL
+      je .right
 
-    lea rdx, [rbx + rcx + 1]
-    and rdx, (QLEN >> 1) - 1
+      lea rdx, [rbx + rcx + 1]
+      and rdx, (QLEN >> 1) - 1
 
-    mov rax, [rdi + NODE_OFFSET_LEFT]
-    mov [rsp + rdx * 8], rax
-    inc rcx
+      mov rax, [rdi + NODE_OFFSET_LEFT]
+      mov [rsp + rdx * 8], rax
+      inc rcx
 
     .right:
       cmp rcx, QLEN
@@ -562,7 +563,7 @@ bfs: ; (RDI: Node *node, RSI: (*consumer)(RDI: int val))
     ret
 
 global avl_traversal
-avl_traversal: ; (RDI: UBSTree *bstree, RSI: Order order, RDX: (*consumer)(RDI: int val))
+avl_traversal: ; (RDI: AVL *bstree, RSI: Order order, RDX: (*consumer)(RDI: int val))
   mov rax, rsi
   mov rsi, rdx
   mov rdi, [rdi + AVL_OFFSET_ROOT]
@@ -599,7 +600,7 @@ nodes: ; (RDI: Node *node) -> size_t
     ret
 
 global avl_nodes
-avl_nodes: ; (RDI: UBSTree *bstree) -> size_t
+avl_nodes: ; (RDI: AVL *bstree) -> size_t
   xor rax, rax
   mov rdi, [rdi + AVL_OFFSET_ROOT]
   jmp nodes
@@ -634,7 +635,7 @@ levels: ; (RDI: Node *node, RSI: size_t level) -> size_t
     ret
 
 global avl_levels
-avl_levels: ; (RDI: UBSTree *bstree) -> size_t
+avl_levels: ; (RDI: AVL *bstree) -> size_t
   mov rdi, [rdi + AVL_OFFSET_ROOT]
   xor rsi, rsi
   jmp levels
