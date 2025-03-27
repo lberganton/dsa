@@ -73,9 +73,6 @@ public class RBTree implements BSTree {
                         node = node.left;
                     }
                     RR(node.grandpa());
-                    node.father.color = Color.BLACK;
-                    node.father.right.color = Color.RED;
-                    node = node.father;
                 }
                 else {
                     if (node.isLeftChild()) {
@@ -83,10 +80,10 @@ public class RBTree implements BSTree {
                         node = node.right;
                     }
                     LL(node.grandpa());
-                    node.father.color = Color.BLACK;
-                    node.father.left.color = Color.RED;
-                    node = node.father;
                 }
+                node.father.color = Color.BLACK;
+                node.brother().color = Color.RED;
+                node = node.father;
             }
         }
 
@@ -288,16 +285,23 @@ public class RBTree implements BSTree {
             return father.right == this;
         }
 
-        Node grandpa() {
+        Node brother() {
             if (father == NIL) {
                 throw new NoSuchElementException();
             }
-            return father.father;
+            return isLeftChild() ? father.right : father.left;
         }
 
         Node uncle() {
             Node grandpa = grandpa();
             return isLeftChild() ? grandpa.right : grandpa.left;
+        }
+
+        Node grandpa() {
+            if (father == NIL) {
+                throw new NoSuchElementException();
+            }
+            return father.father;
         }
     }
 }
