@@ -59,7 +59,7 @@ public class RBTree implements BSTree {
     }
 
     private void balanceInsert(Node node) {
-        while (node != root && node.color == Color.RED && node.father.color == Color.RED) {
+        while (node.father.color == Color.RED) {
             if (node.uncle().color == Color.RED) {
                 node.grandpa().color = Color.RED;
                 node.uncle().color = Color.BLACK;
