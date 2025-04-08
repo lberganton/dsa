@@ -1,6 +1,8 @@
 #include "stack.h"
 #include <stdlib.h>
 
+#define DEFAULT_CAPACITY 16
+
 struct ArrayStack {
   int *array;
   size_t allocated;
@@ -13,7 +15,7 @@ ArrayStack* arraystack_create(size_t initial_capacity) {
     return NULL;
   }
 
-  new->allocated = initial_capacity != 0 ? initial_capacity : 16;
+  new->allocated = initial_capacity != 0 ? initial_capacity : DEFAULT_CAPACITY;
   new->elements = 0;
 
   new->array = (int*) malloc(new->allocated * sizeof(int));
@@ -26,7 +28,7 @@ ArrayStack* arraystack_create(size_t initial_capacity) {
 }
 
 static bool increase(ArrayStack *stack) {
-  int *new = (int*) realloc(stack->array, stack->allocated * 2);
+  int *new = (int*) realloc(stack->array, stack->allocated * 2 * sizeof(int));
   if (new == NULL) {
     return false;
   }
