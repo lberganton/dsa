@@ -32,7 +32,7 @@ Heap* heap_create(size_t initial_capacity, int (*comparator)(int val1, int val2)
 }
 
 static bool increase(Heap *heap) {
-  int *new = (int*) realloc(heap->array, heap->allocated * 2);
+  int *new = (int*) realloc(heap->array, heap->allocated * 2 * sizeof(int));
   if (new == NULL) {
     return false;
   }

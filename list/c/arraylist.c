@@ -29,7 +29,7 @@ ArrayList* arraylist_create(size_t initial_capacity) {
 }
 
 static bool increase(ArrayList *list) {
-  int *new = (int*) realloc(list->array, list->allocated * 2);
+  int *new = (int*) realloc(list->array, list->allocated * 2 * sizeof(int));
   if (new == NULL) {
     return false;
   }
