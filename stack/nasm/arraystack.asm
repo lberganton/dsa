@@ -3,9 +3,9 @@
 
 %define DEFAULT_CAPACITY 16
 
-%define ARRAYSTACK_OFFSET_ARRAY 0
-%define ARRAYSTACK_OFFSET_ALLOCATED ARRAYSTACK_OFFSET_ARRAY + 8
-%define ARRAYSTACK_OFFSET_ELEMENTS ARRAYSTACK_OFFSET_ALLOCATED + 8
+%define ARRAYSTACK_OFFSET_ARRAY     0
+%define ARRAYSTACK_OFFSET_ALLOCATED ARRAYSTACK_OFFSET_ARRAY     + 8
+%define ARRAYSTACK_OFFSET_ELEMENTS  ARRAYSTACK_OFFSET_ALLOCATED + 8
 
 %define ARRAYSTACK_SIZE 24
 
@@ -150,7 +150,7 @@ arraystack_equals: ; (RDI: ArrayStack *first, RSI: ArrayStack *second) -> RAX: b
 
   mov rax, 1
 
-  .loop:
+  .iteration:
     test rcx, rcx
     jz .done
 
@@ -165,7 +165,7 @@ arraystack_equals: ; (RDI: ArrayStack *first, RSI: ArrayStack *second) -> RAX: b
     dec rcx
     add rdi, DATA_LEN
     add rsi, DATA_LEN
-    jmp .loop
+    jmp .iteration
 
   .done:
     ret
@@ -177,6 +177,7 @@ arraystack_foreach: ; (RDI: ArrayStack *stack, RSI: void (*consumer)(int val))
   jz .done
 
   mov rdi, [rdi + ARRAYSTACK_OFFSET_ARRAY]
+  lea rdi, [rdi + (rcx - 1) * DATA_LEN]
 
   .loop:
     push rcx
@@ -193,7 +194,7 @@ arraystack_foreach: ; (RDI: ArrayStack *stack, RSI: void (*consumer)(int val))
     dec rcx
     jz .done
 
-    add rdi, DATA_LEN
+    sub rdi, DATA_LEN
     jmp .loop
 
   .done:
