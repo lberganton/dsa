@@ -84,7 +84,7 @@ static void RR(RBTree *rbtree, Node *node) {
   node->father = left;
 }
 
-static void balance_insert(RBTree *rbtree, Node *node) {
+static void insert_fixup(RBTree *rbtree, Node *node) {
   while (node != rbtree->root && node->color == RED && node->father->color == RED) {
     Node *grandpa = node->father->father;
 
@@ -158,7 +158,7 @@ void rbtree_insert(RBTree *rbtree, int val) {
 
   *node = node_create(val, father);
   if (*node != NULL) {
-    balance_insert(rbtree, *node);
+    insert_fixup(rbtree, *node);
   }
 }
 

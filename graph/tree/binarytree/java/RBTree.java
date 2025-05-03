@@ -58,7 +58,7 @@ public class RBTree implements BSTree {
         node.father = left;
     }
 
-    private void balanceInsert(Node node) {
+    private void insertFixup(Node node) {
         while (node.father.color == Color.RED) {
             if (node.uncle().color == Color.RED) {
                 node.grandpa().color = Color.RED;
@@ -116,7 +116,7 @@ public class RBTree implements BSTree {
             father.right = newNode;
         }
 
-        balanceInsert(newNode);
+        insertFixup(newNode);
     }
 
     @Override
