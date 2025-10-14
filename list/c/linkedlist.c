@@ -191,14 +191,14 @@ bool linkedlist_equals(LinkedList *first, LinkedList *second) {
   return true;
 }
 
-bool linkedlist_reduce(LinkedList *list, int indentity, int (*function)(int val1, int val2), int *ret) {
+bool linkedlist_reduce(LinkedList *list, int identity, int (*bifunction)(int val1, int val2), int *ret) {
   if (list->elements == 0) {
     return false;
   }
 
-  *ret = indentity;
+  *ret = identity;
   for (Node *n = list->head; n != NULL; n = n->next) {
-    *ret = function(*ret, n->val);
+    *ret = bifunction(*ret, n->val);
   }
 
   return true;

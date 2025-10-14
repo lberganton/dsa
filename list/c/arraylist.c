@@ -141,14 +141,14 @@ bool arraylist_equals(ArrayList *first, ArrayList *second) {
   return true;
 }
 
-bool arraylist_reduce(ArrayList *list, int indentity, int (*function)(int val1, int val2), int *ret) {
+bool arraylist_reduce(ArrayList *list, int identity, int (*bifunction)(int val1, int val2), int *ret) {
   if (list->elements == 0) {
     return false;
   }
 
-  *ret = indentity;
+  *ret = identity;
   for (size_t i = 0; i < list->elements; i++) {
-    *ret = function(*ret, list->array[i]);
+    *ret = bifunction(*ret, list->array[i]);
   }
 
   return true;
