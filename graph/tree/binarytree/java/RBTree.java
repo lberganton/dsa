@@ -10,7 +10,7 @@ public class RBTree implements BSTree {
 
     private Node root = NIL;
 
-    private void LL(Node node) {
+    private void leftRotate(Node node) {
         Node right = node.right;
 
         node.right = right.left;
@@ -34,7 +34,7 @@ public class RBTree implements BSTree {
         node.father = right;
     }
 
-    private void RR(Node node) {
+    private void rightRotate(Node node) {
         Node left = node.left;
 
         node.left = left.right;
@@ -69,17 +69,17 @@ public class RBTree implements BSTree {
             else {
                 if (node.father.isLeftChild()) {
                     if (node.isRightChild()) {
-                        LL(node.father);
+                        leftRotate(node.father);
                         node = node.left;
                     }
-                    RR(node.grandpa());
+                    rightRotate(node.grandpa());
                 }
                 else {
                     if (node.isLeftChild()) {
-                        RR(node.father);
+                        rightRotate(node.father);
                         node = node.right;
                     }
-                    LL(node.grandpa());
+                    leftRotate(node.grandpa());
                 }
                 node.father.color = Color.BLACK;
                 node.brother().color = Color.RED;

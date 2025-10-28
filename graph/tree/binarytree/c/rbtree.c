@@ -36,7 +36,7 @@ static inline bool is_right_child(Node *node) {
   return node->father->right == node;
 }
 
-static void LL(RBTree *rbtree, Node *node) {
+static void left_rotate(RBTree *rbtree, Node *node) {
   Node *right = node->right;
 
   node->right = right->left;
@@ -60,7 +60,7 @@ static void LL(RBTree *rbtree, Node *node) {
   node->father = right;
 }
 
-static void RR(RBTree *rbtree, Node *node) {
+static void right_rotate(RBTree *rbtree, Node *node) {
   Node *left = node->left;
 
   node->left = left->right;
@@ -99,10 +99,10 @@ static void insert_fixup(RBTree *rbtree, Node *node) {
       }
       else {
         if (is_right_child(node)) {
-          LL(rbtree, node->father);
+          left_rotate(rbtree, node->father);
           node = node->left;
         }
-        RR(rbtree, grandpa);
+        right_rotate(rbtree, grandpa);
         grandpa->color = RED;
         node->father->color = BLACK;
         node = node->father;
@@ -119,10 +119,10 @@ static void insert_fixup(RBTree *rbtree, Node *node) {
       }
       else {
         if (is_left_child(node)) {
-          RR(rbtree, node->father);
+          right_rotate(rbtree, node->father);
           node = node->right;
         }
-        LL(rbtree, grandpa);
+        left_rotate(rbtree, grandpa);
         grandpa->color = RED;
         node->father->color = BLACK;
         node = node->father;
